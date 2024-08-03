@@ -1,53 +1,16 @@
-import embed from "vega-embed";
-import { scatterHist } from "./scatter_hist";
-import { simpleHist } from "./simple_hist";
-import { baseOptions } from "./common/options";
-import { handleErrors } from "./common/utils/data";
-import "./common/styles.css";
+const my_custom_viz = {
+    options: {
+        // ... define your options ...
+    },
 
-looker.plugins.visualizations.add({
-  options: baseOptions,
-  create: function (element, config) {
-    var container = element.appendChild(document.createElement("div"));
-    container.setAttribute("id", "my-vega");
-  },
+    create: function(element, config) {
+        // ... one-time visual setup ...
+    },
 
-  updateAsync: function (data, element, config, queryResponse, details, done) {
-    if (data.length === 0) {
-      this.addError({ title: "No Results" });
-      done();
-      return;
+    updateAsync: function(data, element, config, queryResponse, details, done) {
+        // ... code to modify chart ...
+        done();
     }
+}
 
-    if (config.bin_style === "binned_hist") {
-      if (
-        !handleErrors(this, queryResponse, {
-          min_pivots: 0,
-          max_pivots: 0,
-          min_dimensions: 1,
-          max_dimensions: undefined,
-          min_measures: 2,
-          max_measures: undefined,
-        })
-      )
-        return;
-
-      scatterHist(data, element, config, queryResponse, details, done, this, embed);
-    } else {
-      if (
-        !handleErrors(this, queryResponse, {
-          min_pivots: 0,
-          max_pivots: 0,
-          min_dimensions: 1,
-          max_dimensions: undefined,
-          min_measures: 1,
-          max_measures: undefined,
-        })
-      )
-        return;
-
-      simpleHist(data, element, config, queryResponse, details, done, this, embed);
-    }
-    done();
-  },
-});
+looker.plugins.visualizations.add(my_custom_viz);
